@@ -1,0 +1,118 @@
+-- 1. CREATE DATABASE ecommerse_project
+USE ecommerse_project
+SELECT * FROM sales_dataset
+
+-- 2. CREATE TABLE USING ANACONDA PROMOPT - csvsql --dialect mysql --snifflimit 10000 Sales_Dataset.csv > result.sql
+CREATE TABLE `Sales_Dataset` (
+	order_id VARCHAR(15) NOT NULL, 
+	order_date DATE NOT NULL, 
+	ship_date DATE NOT NULL, 
+	ship_mode VARCHAR(14) NOT NULL, 
+	customer_name VARCHAR(22) NOT NULL, 
+	segment VARCHAR(11) NOT NULL, 
+	state VARCHAR(36) NOT NULL, 
+	country VARCHAR(32) NOT NULL, 
+	market VARCHAR(6) NOT NULL, 
+	region VARCHAR(14) NOT NULL, 
+	product_id VARCHAR(16) NOT NULL, 
+	category VARCHAR(15) NOT NULL, 
+	sub_category VARCHAR(11) NOT NULL, 
+	product_name VARCHAR(127) NOT NULL, 
+	sales DECIMAL(38, 0) NOT NULL, 
+	quantity DECIMAL(38, 0) NOT NULL, 
+	discount DECIMAL(38, 3) NOT NULL, 
+	profit DECIMAL(38, 5) NOT NULL, 
+	shipping_cost DECIMAL(38, 2) NOT NULL, 
+	order_priority VARCHAR(8) NOT NULL, 
+	year DECIMAL(38, 0) NOT NULL
+);
+
+-- 3. LOAD THE FILE Sales_Dataset.csv to Sales_Dataset TABLE
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Sales_Dataset.csv'
+INTO TABLE Sales_Dataset
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Q1 IDENTIFY THE TOP 3 STATES WITH THE HIGHEST SHIPPING  COST
+SELECT state, SUM(shipping_cost) AS cost
+ FROM SALES_DATASET 
+ GROUP BY state
+ ORDER BY cost desc
+ LIMIT 3
+ 
+ -- Q2 IDENTIFY THE TOTAL REVENUE 
+SELECT SUM(profit) AS Total_Revenue FROM Sales_Dataset
+
+-- Q3 IDENTIFY THE COUNT TOTAL ORDERS
+SELECT COUNT(distinct order_id) AS Total_Revenue FROM Sales_Dataset
+
+-- Q4 IDENTIFY THE HIGHEST REVENUE GENERATING PRODUCT
+SELECT product_name, SUM(sales) AS total_sales FROM Sales_Dataset
+GROUP BY product_name
+ORDER BY total_sales desc
+limit 1
+
+-- Q5 IDENTIFY THE MIN ORDER SALES AND MAX ORDER SALES
+SELECT 
+MIN(sales) AS min_order_sales,
+Max(sales) AS max_order_sales
+from Sales_Dataset;
+
+-- Q6 IDENTIFY THE TOTAL SALES PER PRODUCT CATEGORY
+SELECT Category, SUM(sales) AS Total_Sales
+FROM Sales_Dataset
+GROUP BY Category
+ORDER BY Total_Sales DESC;
+
+-- Q7 IDENTIFY WHICH DAY OF WEEK HAS HIGHEST SALES
+SELECT DAYNAME(order_date) AS DAY_NAME ,SUM(sales) AS Total_sales FROM Sales_Dataset
+GROUP BY DAY_NAME
+ORDER BY Total_sales DESC;
+
+-- Q8 IDENTIFY WHICH PRODCUT HAVING BROUGHT MORE QUANTITIES MORE THAN 5
+SELECT Product_name ,sum(quantity) AS total_quantities FROM Sales_Dataset
+GROUP BY product_name
+HAVING SUM(quantity) > 5
+order by total_quantities DESC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+
+
+
